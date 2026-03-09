@@ -32,20 +32,74 @@ public class BinaryAPIControllerTest {
     @Autowired
     private MockMvc mvc;
 
-   
+   //success test for operators//
     @Test
     public void add() throws Exception {
         this.mvc.perform(get("/add").param("operand1","111").param("operand2","1010"))//.andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().string("10001"));
     }
-	@Test
-    public void add2() throws Exception {
-        this.mvc.perform(get("/add_json").param("operand1","111").param("operand2","1010"))//.andDo(print())
+
+    @Test
+    public void multiply() throws Exception {
+        this.mvc.perform(get("/multiply").param("operand1","111").param("operand2","1010"))
             .andExpect(status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.operand1").value(111))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.operand2").value(1010))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.result").value(10001))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.operator").value("add"));
+            .andExpect(content().string("1000110"));
+    }
+
+
+    @Test
+    public void and() throws Exception {
+        this.mvc.perform(get("/and").param("operand1","111").param("operand2","1010"))//.andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().string("10"));
+    }
+
+    @Test
+    public void or() throws Exception {
+        this.mvc.perform(get("/or").param("operand1","111").param("operand2","1010"))//.andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().string("1111"));
+    }
+
+    //fail cases//
+
+    //non-binary input should return 0//
+    @Test
+    public void nonBinaryValue() throws Exception {
+        this.mvc.perform(get("/and").param("operand1","567").param("operand2","234"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("0"));
+    }   
+
+    //non number input should return 0//
+    @Test
+    public void nonNumericValue() throws Exception {
+        this.mvc.perform(get("/and").param("operand1","abc").param("operand2","1010"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("0"));
+    }
+
+    //missing 1 operand//
+    @Test
+    public void missingOperand() throws Exception {
+        this.mvc.perform(get("/and").param("operand1","1011").param("operand2",""))
+            .andExpect(status().isOk())
+            .andExpect(content().string("0"));
+    }
+
+    //no operand//
+    @Test
+    public void noOperand() throws Exception {
+        this.mvc.perform(get("/and").param("operand1","").param("operand2",""))
+            .andExpect(status().isOk())
+            .andExpect(content().string("0")); 
+    }
+
+    //invalid operator//
+    @Test
+    public void invalidOperator() throws Exception {
+        this.mvc.perform(get("/andd").param("operand1","1011").param("operand2",""))
+            .andExpect(status().isNotFound());
     }
 }
