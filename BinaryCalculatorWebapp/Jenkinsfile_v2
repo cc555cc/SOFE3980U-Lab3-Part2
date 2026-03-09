@@ -34,13 +34,12 @@ pipeline {
     stages {
         stage ('test') {
             steps {
-                sh 'mvn clean test -f ./BinaryCalculatorWebapp/pom.xml'
+                sh 'mvn -DskipTests clean package -f ./BinaryCalculatorWebapp/pom.xml'
             }
         }
         stage('build'){
             steps{
-                sh 'mvn package -DskipTests -f ./BinaryCalculatorWebapp/ clean package'
-            }
+                sh 'mvn -DskipTests clean package -f ./BinaryCalculatorWebapp/pom.xml'            }
         }
         stage('containerize'){
             steps{
