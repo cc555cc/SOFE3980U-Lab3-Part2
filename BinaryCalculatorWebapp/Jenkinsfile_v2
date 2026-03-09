@@ -64,7 +64,7 @@ pipeline {
                         script{
                             try{
                                 // delete it if a previous deployment exists
-                                sh 'kubectl delete deployment binarycalculator-deployment --ignore-not-found'
+                                sh 'kubectl delete deployment binarycalculator-deployment'
                             }
                             catch (Exception e){
                                 
